@@ -1,9 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
 import getAllQuestions from './controllers/getAllQuestions.js';
 import getRankings from './controllers/getRankings.js';
+
 import submitAnswer from './controllers/submitAnswer.js';
+
+import getTeamQuestions from "./controllers/getTeamQuestions.js";
+import getTeamStats from "./controllers/getTeamStats.js";
 
 // Swagger setup
 import path from 'path';
@@ -39,6 +44,11 @@ app.get('/ranking', getRankings);
 
 // Submit an answer
 app.post('/answer', ...submitAnswer);
+
+// Get team questions
+app.get("/team/:team_name_id/questions", getTeamQuestions);
+// Get team stats
+app.get("/team/:team_name_id/stats", getTeamStats);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
