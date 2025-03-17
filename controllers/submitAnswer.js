@@ -2,6 +2,59 @@ import expressAsyncHandler from "express-async-handler";
 import supabase from "../services/supabaseService.js";
 import moment from "moment";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     SubmitAnswerRequest:
+ *       type: object
+ *       required:
+ *         - team_name_id
+ *         - question_id
+ *         - answer
+ *       properties:
+ *         team_name_id:
+ *           type: string
+ *           description: The ID of the team submitting the answer.
+ *         question_id:
+ *           type: integer
+ *           description: The ID of the question being answered.
+ *         answer:
+ *           type: string
+ *           description: The answer submitted by the team.
+ *     SubmitAnswerResponse:
+ *       type: object
+ *       properties:
+ *         correct:
+ *           type: boolean
+ *           description: Indicates whether the submitted answer is correct.
+ */
+
+/**
+ * @swagger
+ * /answer:
+ *   post:
+ *     summary: Submit an answer
+ *     description: Submits an answer for a specific question by a team.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubmitAnswerRequest'
+ *     responses:
+ *       200:
+ *         description: Answer submission result.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SubmitAnswerResponse'
+ *       400:
+ *         description: Bad Request - Missing required fields.
+ *       500:
+ *          description: Internal Server Error
+ */
+
 // Middleware to validate request body
 const validateRequest = (req, res, next) => {
   const { team_name_id, question_id, answer } = req.body;

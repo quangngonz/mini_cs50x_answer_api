@@ -1,5 +1,33 @@
 import supabase from "../services/supabaseService.js";
 
+/**
+ * @swagger
+ * /questions:
+ *   get:
+ *     summary: Get all questions
+ *     description: Retrieves a list of all questions without their answers.
+ *     responses:
+ *       200:
+ *         description: A list of questions.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The question ID.
+ *                   question:
+ *                     type: string
+ *                     description: The question text.
+ *                   star_rating:
+ *                     type: integer
+ *                     description: The star rating of the question.
+ *       500:
+ *         description: Internal Server Error.
+ */
 const getAllQuestions = async (req, res) => {
   try {
     // Fetch questions from Supabase

@@ -1,6 +1,46 @@
 import supabase from "../services/supabaseService.js";
 import moment from "moment";
 
+/**
+ * @swagger
+ * /ranking:
+ *   get:
+ *     summary: Get team rankings
+ *     description: Retrieves the current rankings of teams based on their scores and solve times.
+ *     responses:
+ *       200:
+ *         description: A list of team rankings.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   team_name:
+ *                     type: string
+ *                     description: The name of the team.
+ *                   solves:
+ *                     type: array
+ *                     description: An array containing solve status and timestamps.
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         oneOf:  # Allow either boolean or string
+ *                           - type: boolean  # Solved or not
+ *                           - type: string   # Timestamp, or null if not solved.
+ *                             format: date-time
+ *
+ *                   score:
+ *                     type: integer
+ *                     description: The team's score.
+ *                   latestSolve:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The timestamp of the team's latest solve (GMT+7).
+ *       500:
+ *         description: Internal Server Error.
+ */
 export default async function getRankings(req, res) {
   let ranking = [];
 
