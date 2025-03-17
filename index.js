@@ -1,15 +1,17 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
-
 import getAllQuestions from './controllers/getAllQuestions.js';
 import getRankings from './controllers/getRankings.js';
 import submitAnswer from './controllers/submitAnswer.js';
 
 // Swagger setup
 import swaggerUi from 'swagger-ui-express';
-import swaggerJsdoc from 'swagger-jsdoc';
+import {readFileSync} from 'fs';
+import {fileURLToPath} from 'url';
+import {dirname, join} from 'path';
+
+dotenv.config();
 
 const app = express();
 
@@ -21,38 +23,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json());
 
-// Swagger configuration
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Quang Ngonz Mini CS50x Answer API',
-      version: '1.0.0',
-      description:
-        'API for submitting answers and retrieving rankings for the Mini CS50x competition.',
-    },
-  },
-  apis: ['./controllers/*.js'],
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const specs = swaggerJsdoc(options);
-app.use(
-  '/api-docs',
-  swaggerUi.serve,
-  swaggerUi.setup(specs, {
-    explorer: false,
-    customSiteTitle: 'Mini CS50x API Docs', // Optional: Add a title
-    swaggerOptions: {
-      url: '/api-docs/swagger.json',
-    },
-  })
+const swaggerSpec = JSON.parse(
+  readFileSync(join(__dirname, 'swagger.json'), 'utf-8')
 );
 
-// *** Serve the JSON spec file ***
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(specs);
-});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Get all questions (without answers)
 app.get('/questions', getAllQuestions);

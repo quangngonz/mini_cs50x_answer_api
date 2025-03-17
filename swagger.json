@@ -1,0 +1,156 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mini CS50x Answer API",
+    "version": "1.0.0",
+    "description": "API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition."
+  },
+  "paths": {
+    "/questions": {
+      "get": {
+        "summary": "Get all questions",
+        "description": "Retrieves a list of all questions without their answers.",
+        "responses": {
+          "200": {
+            "description": "A list of questions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "The question ID."
+                      },
+                      "question": {
+                        "type": "string",
+                        "description": "The question text."
+                      },
+                      "star_rating": {
+                        "type": "integer",
+                        "description": "The star rating of the question."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal Server Error." }
+        }
+      }
+    },
+    "/ranking": {
+      "get": {
+        "summary": "Get team rankings",
+        "description": "Retrieves the current rankings of teams based on their scores and solve times.",
+        "responses": {
+          "200": {
+            "description": "A list of team rankings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "team_name": {
+                        "type": "string",
+                        "description": "The name of the team."
+                      },
+                      "solves": {
+                        "type": "array",
+                        "description": "An array containing solve status and timestamps.",
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "oneOf": [
+                              { "type": "boolean" },
+                              { "type": "string", "format": "date-time" }
+                            ]
+                          }
+                        }
+                      },
+                      "score": {
+                        "type": "integer",
+                        "description": "The team's score."
+                      },
+                      "latestSolve": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp of the team's latest solve (GMT+7)."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal Server Error." }
+        }
+      }
+    },
+    "/answer": {
+      "post": {
+        "summary": "Submit an answer",
+        "description": "Submits an answer for a specific question by a team.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubmitAnswerRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answer submission result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmitAnswerResponse"
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Missing required fields." },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubmitAnswerRequest": {
+        "type": "object",
+        "required": ["team_name_id", "question_id", "answer"],
+        "properties": {
+          "team_name_id": {
+            "type": "string",
+            "description": "The ID of the team submitting the answer."
+          },
+          "question_id": {
+            "type": "integer",
+            "description": "The ID of the question being answered."
+          },
+          "answer": {
+            "type": "string",
+            "description": "The answer submitted by the team."
+          }
+        }
+      },
+      "SubmitAnswerResponse": {
+        "type": "object",
+        "properties": {
+          "correct": {
+            "type": "boolean",
+            "description": "Indicates whether the submitted answer is correct."
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
