@@ -73,6 +73,14 @@ quangngonz-mini_cs50x_answer_api/
 
 The `vercel.json` file is included for easy deployment to Vercel. Simply link your repository to a Vercel project and it should deploy automatically. Make sure to set the environment variables (`SUPABASE_URL`, `SUPABASE_KEY`) in your Vercel project settings.
 
+### Generating swagger.json file
+
+Due to vercel deployment, the swagger.json file is not included in the repository. To generate the file, run the following command:
+
+```bash
+node -e "require('fs').writeFileSync('./public/swagger.json', JSON.stringify(require('swagger-jsdoc')({ definition: { openapi: '3.0.0', info: { title: 'Mini CS50x Answer API', version: '1.0.0', description: 'API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition.' } }, apis: ['./controllers/*.js'] })))"
+```
+
 ## Key Features and Considerations
 
 - **Error Handling:** Includes basic error handling for database interactions and missing request parameters.
