@@ -105,7 +105,7 @@ const logSubmission = async (team_name_id, question_id, answer, correct) => {
 
 // Mark team as successful solver
 const setSuccessfulSolver = async (team_name_id, question_id, teamData) => {
-  const solveTime = moment().format("YYYY-MM-DD HH:mm:ss");
+  const solveTime = moment().utcOffset('+0700').format('YYYY-MM-DD HH:mm:ss');
   let { solves = [], timestamps = [] } = teamData;
 
   if (solves[question_id - 1]) {
