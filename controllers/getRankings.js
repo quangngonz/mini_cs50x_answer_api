@@ -84,10 +84,6 @@ export default async function getRankings(req, res) {
       .map(ts => moment(ts)) // Convert to moment objects
       .reduce((max, curr) => curr.isAfter(max) ? curr : max, moment(0)) // Find the max
 
-    // Covert to GMT+7
-    latestTimestamp.add(7, "hours");
-
-
     for (let i = 0; i < answeredQuestions.length; i++) {
       if (answeredQuestions[i]) {
         score += questions_star[i];
