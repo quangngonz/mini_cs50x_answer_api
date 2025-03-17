@@ -6,10 +6,8 @@ import getRankings from './controllers/getRankings.js';
 import submitAnswer from './controllers/submitAnswer.js';
 
 // Swagger setup
-import swaggerUi from 'swagger-ui-express';
-import {readFileSync} from 'fs';
-import {fileURLToPath} from 'url';
-import {dirname, join} from 'path';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -24,13 +22,15 @@ app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-const swaggerSpec = JSON.parse(
-  readFileSync(join(__dirname, 'swagger.json'), 'utf-8')
-);
+// Serve static files from "public" folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Redirect /api-docs to swagger.html
+app.get('/api-docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'swagger.html'));
+});
 
 // Get all questions (without answers)
 app.get('/questions', getAllQuestions);
