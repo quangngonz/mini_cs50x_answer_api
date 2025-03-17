@@ -77,6 +77,7 @@ export default async function getRankings(req, res) {
     let score = 0;
     let team_name = team.team_name_id;
     let answeredQuestions = team.solves;
+    let hints_given = team.hints_given;
 
     let timestamps = team.timestamps;
     const latestTimestamp = team.timestamps
@@ -96,14 +97,18 @@ export default async function getRankings(req, res) {
       team_name,
       solves: [answeredQuestions, timestamps],
       score,
+      hints_given,
       latestSolve: latestTimestamp,
     })
   });
 
-  // Sort ranking by score, then by fastest time
+  // Sort ranking by score, then hints_given, then by fastest time
   ranking.sort((a, b) => {
     if (a.score === b.score) {
-      return a.latestTimestamp - b.latestTimestamp;
+      if (a.hints_given === b.hints_given) {
+        return moment(a.latestSolve).isBefore(moment(b.latestSolve)) ? -1 : 1;
+      }
+      return a.hints_given - b.hints_given;
     }
     return b.score - a.score;
   });
