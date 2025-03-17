@@ -95,7 +95,7 @@ const logSubmission = async (team_name_id, question_id, answer, correct) => {
       team_name_id,
       question_id,
       answer,
-      submitted_at: moment().format("YYYY-MM-DD HH:mm:ss"),
+      submitted_at: moment().utcOffset('+0700').format("YYYY-MM-DD HH:mm:ss"),
       correct,
     },
   ]);
