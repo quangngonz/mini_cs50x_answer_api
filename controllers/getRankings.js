@@ -93,6 +93,25 @@ export default async function getRankings(req, res) {
     }
   });
 
+  // Get all hints given
+  const { data: hints, error: hintsError } = await supabase
+    .from('hints_given')
+    .select('*');
+
+  if (hintsError) {
+    return res.status(500).json({ error: hintsError.message });
+  }
+
+  // Count how many hints each team has given
+  const teamsHints = {};
+  hints.forEach((hint) => {
+    if (!teamsHints[hint.team_name_id]) {
+      teamsHints[hint.team_name_id] = 0;
+    }
+    teamsHints[hint.team_name_id]++;
+  });
+
+  console.log(teamsHints);
   console.log(teamsSubmissions);
 
   // Calculate score for each team
@@ -100,7 +119,6 @@ export default async function getRankings(req, res) {
     let score = 0;
     let team_name = team.team_name_id;
     let answeredQuestions = team.solves;
-    let hints_given = team.hints_given;
 
     let timestamps = team.timestamps;
     const latestTimestamp = team.timestamps
@@ -120,7 +138,7 @@ export default async function getRankings(req, res) {
       team_name,
       solves: [answeredQuestions, timestamps],
       score,
-      hints_given,
+      hints_given: teamsHints[team_name] ? teamsHints[team_name] : 0,
       wrong_answers: teamsSubmissions[team_name]
         ? teamsSubmissions[team_name].length
         : 0,

@@ -20,11 +20,9 @@ async function updateTeamsData() {
     // Generate timestamps only if the corresponding solve is true
     const timestamps = solves.map(solve => solve ? moment().subtract(Math.floor(Math.random() * 180), 'minutes').format('YYYY-MM-DD HH:mm:ss') : null);
 
-    const hints_given = Math.floor(Math.random() * 8) + 1;
-
     const { error } = await supabase
       .from('teams_progress')
-      .update({ solves, timestamps, hints_given })
+      .update({ solves, timestamps })
       .eq('team_name_id', team.team_name_id);
 
     if (error) {
@@ -39,11 +37,10 @@ async function blankTeamsData() {
   for (const team of teams) {
     const solves = Array.from({ length: 5 }, () => false);
     const timestamps = Array.from({ length: 5 }, () => null);
-    const hints_given = 0;
 
     const { error } = await supabase
       .from('teams_progress')
-      .update({ solves, timestamps, hints_given })
+      .update({ solves, timestamps })
       .eq('team_name_id', team.team_name_id);
 
     if (error) {

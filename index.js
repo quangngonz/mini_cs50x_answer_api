@@ -13,6 +13,7 @@ import getTeamStats from "./controllers/getTeamStats.js";
 // Swagger setup
 import path from 'path';
 import { fileURLToPath } from 'url';
+import addHint from "./controllers/addHint.js";
 
 dotenv.config();
 
@@ -44,6 +45,8 @@ app.get('/ranking', getRankings);
 
 // Submit an answer
 app.post('/answer', ...submitAnswer);
+// Add a hint
+app.post('/addHint', addHint);
 
 // Get team questions
 app.get("/team/:team_name_id/questions", getTeamQuestions);
