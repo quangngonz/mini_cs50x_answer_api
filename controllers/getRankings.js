@@ -112,7 +112,6 @@ export default async function getRankings(req, res) {
   });
 
   console.log(teamsHints);
-  console.log(teamsSubmissions);
 
   // Calculate score for each team
   teams.forEach((team) => {
@@ -132,7 +131,9 @@ export default async function getRankings(req, res) {
       }
     }
 
-    console.log(team_name, answeredQuestions, score, latestTimestamp);
+    const hints_given = teamsHints[team_name] ? teamsHints[team_name] : 0
+
+    console.log(team_name, answeredQuestions, score, hints_given, latestTimestamp);
 
     ranking.push({
       team_name,
