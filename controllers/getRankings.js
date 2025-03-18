@@ -1,5 +1,5 @@
-import supabase from "../services/supabaseService.js";
-import moment from "moment";
+import supabase from '../services/supabaseService.js';
+import moment from 'moment';
 
 /**
  * @swagger
@@ -45,8 +45,8 @@ export default async function getRankings(req, res) {
   let ranking = [];
 
   const { data: teams, error } = await supabase
-    .from("teams_progress")
-    .select("*");
+    .from('teams_progress')
+    .select('*');
 
   if (error) {
     return res.status(500).json({ error: error.message });
@@ -54,8 +54,8 @@ export default async function getRankings(req, res) {
 
   // Get question id and star
   const { data: questions, error: questionsError } = await supabase
-    .from("questions")
-    .select("id, star_rating");
+    .from('questions')
+    .select('id, star_rating');
 
   if (questionsError) {
     return res.status(500).json({ error: questionsError.message });
@@ -63,7 +63,7 @@ export default async function getRankings(req, res) {
 
   // Sort questions by id
   questions.sort((a, b) => a.id - b.id);
-  let questions_star = []
+  let questions_star = [];
   questions.forEach((question) => {
     if (question.star_rating) {
       questions_star.push(question.star_rating);
@@ -71,6 +71,29 @@ export default async function getRankings(req, res) {
   });
 
   console.log(`Questions star: ${questions_star}`);
+
+  // Get all submissions
+  const { data: submissions, error: submissionsError } = await supabase
+    .from('submissions')
+    .select('*');
+
+  if (submissionsError) {
+    return res.status(500).json({ error: submissionsError.message });
+  }
+
+  const teamsSubmissions = {};
+
+  // Count how many wrong answers each team has submitted
+  submissions.forEach((submission) => {
+    if (!submission.correct) {
+      if (!teamsSubmissions[submission.team_name_id]) {
+        teamsSubmissions[submission.team_name_id] = [];
+      }
+      teamsSubmissions[submission.team_name_id].push(submission);
+    }
+  });
+
+  console.log(teamsSubmissions);
 
   // Calculate score for each team
   teams.forEach((team) => {
@@ -81,9 +104,9 @@ export default async function getRankings(req, res) {
 
     let timestamps = team.timestamps;
     const latestTimestamp = team.timestamps
-      .filter(ts => ts !== null) // Remove null values
-      .map(ts => moment(ts)) // Convert to moment objects
-      .reduce((max, curr) => curr.isAfter(max) ? curr : max, moment(0)) // Find the max
+      .filter((ts) => ts !== null) // Remove null values
+      .map((ts) => moment(ts)) // Convert to moment objects
+      .reduce((max, curr) => (curr.isAfter(max) ? curr : max), moment(0)); // Find the max
 
     for (let i = 0; i < answeredQuestions.length; i++) {
       if (answeredQuestions[i]) {
@@ -98,19 +121,20 @@ export default async function getRankings(req, res) {
       solves: [answeredQuestions, timestamps],
       score,
       hints_given,
+      wrong_answers: teamsSubmissions[team_name]
+        ? teamsSubmissions[team_name].length
+        : 0,
       latestSolve: latestTimestamp,
-    })
+    });
   });
 
-  // Sort ranking by score, then hints_given, then by fastest time
+  // Sort ranking by score, then hints_given, wrong_answers given then by fastest time
   ranking.sort((a, b) => {
-    if (a.score === b.score) {
-      if (a.hints_given === b.hints_given) {
-        return moment(a.latestSolve).isBefore(moment(b.latestSolve)) ? -1 : 1;
-      }
-      return a.hints_given - b.hints_given;
-    }
-    return b.score - a.score;
+    if (b.score !== a.score) return b.score - a.score; // Higher score first
+    if (a.hints_given !== b.hints_given) return a.hints_given - b.hints_given; // Fewer hints first
+    if (a.wrong_answers !== b.wrong_answers)
+      return a.wrong_answers - b.wrong_answers; // Fewer wrong answers first
+    return a.latestSolve - b.latestSolve; // Earlier solve time first
   });
 
   res.json(ranking);
