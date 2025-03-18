@@ -67,30 +67,6 @@ const addHint = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // Fetch the current hints_given count
-    const { data: progressData, error: fetchError } = await supabase
-      .from("teams_progress")
-      .select("hints_given")
-      .eq("team_name_id", team_name_id)
-      .single();
-
-    if (fetchError) {
-      return res.status(500).json({ error: "Failed to fetch team progress" });
-    }
-
-    // Increment the hints_given count
-    const newHintsGiven = (progressData?.hints_given || 0) + 1;
-
-    // Update the hints_given column
-    const { error: updateError } = await supabase
-      .from("teams_progress")
-      .update({ hints_given: newHintsGiven })
-      .eq("team_name_id", team_name_id);
-
-    if (updateError) {
-      return res.status(500).json({ error: "Failed to update hints given" });
-    }
-
     res.status(201).json({
       message: "Hint added successfully",
       data: { team_name_id, question_id, submitted_at: hintTime },
