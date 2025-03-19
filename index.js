@@ -9,11 +9,13 @@ import submitAnswer from './controllers/submitAnswer.js';
 
 import getTeamQuestions from "./controllers/getTeamQuestions.js";
 import getTeamStats from "./controllers/getTeamStats.js";
+import addHint from "./controllers/addHint.js";
+import authenticate from "./middleware/authenticate.js";
+import getTeamName from "./controllers/getTeamName.js";
 
 // Swagger setup
 import path from 'path';
 import { fileURLToPath } from 'url';
-import addHint from "./controllers/addHint.js";
 
 dotenv.config();
 
@@ -48,6 +50,8 @@ app.post('/answer', ...submitAnswer);
 // Add a hint
 app.post('/addHint', addHint);
 
+// Email to team_name_id
+app.get('/get-team-name', authenticate, getTeamName)
 // Get team questions
 app.get("/team/:team_name_id/questions", getTeamQuestions);
 // Get team stats
