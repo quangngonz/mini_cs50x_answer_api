@@ -51,7 +51,7 @@ app.post('/answer', ...submitAnswer);
 app.post('/addHint', addHint);
 
 // Email to team_name_id
-app.get('/get-team-name', authenticate, getTeamName)
+app.post('/get-team-name', authenticate, getTeamName)
 // Get team questions
 app.get("/team/:team_name_id/questions", getTeamQuestions);
 // Get team stats
