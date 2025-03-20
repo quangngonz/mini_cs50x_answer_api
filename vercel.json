@@ -11,5 +11,7 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ]
+  ],
+  "buildCommand": "npm install && node -e \"require('fs').writeFileSync('./public/swagger.json', JSON.stringify(require('swagger-jsdoc')({ definition: { openapi: '3.0.0', info: { title: 'Mini CS50x Answer API', version: '1.0.0', description: 'API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition.' } }, apis: ['./controllers/*.js'] }))) && npm run build\"",
+  "devCommand": "npm run dev"
 }
