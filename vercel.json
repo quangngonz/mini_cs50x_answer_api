@@ -16,5 +16,5 @@
       "dest": "/public/swagger.json"
     }
   ],
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run generate-swagger && vercel build"
 }

@@ -7,9 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "generate-swagger": "node -e \"const fs = require('fs'); const swaggerJsdoc = require('swagger-jsdoc'); const spec = swaggerJsdoc({ definition: { openapi: '3.0.0', info: { title: 'Mini CS50x Answer API', version: '1.0.0', description: 'API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition.' } }, apis: ['./controllers/*.js'] }); fs.writeFileSync('./public/swagger.json', JSON.stringify(spec, null, 2)); console.log('Swagger JSON generated successfully!')\"",
-    "prebuild": "npm run generate-swagger",
-    "build": "cp public/swagger.json . && vercel build"
+    "generate-swagger": "node -e \"const fs = require('fs'); const swaggerJsdoc = require('swagger-jsdoc'); const spec = swaggerJsdoc({ definition: { openapi: '3.0.0', info: { title: 'Mini CS50x Answer API', version: '1.0.0', description: 'API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition.' } }, apis: ['./controllers/*.js'] }); fs.writeFileSync('./public/swagger.json', JSON.stringify(spec, null, 2)); console.log('Swagger JSON generated successfully!')\""
   },
   "keywords": [],
   "author": "",
