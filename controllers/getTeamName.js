@@ -57,7 +57,7 @@ const getTeamName = async (req, res) => {
 
     const { data, error } = await supabase
       .from('team_info') // Change this to your actual table
-      .select('team_name_id')
+      .select('team_name_id, team_name')
       .eq('leader_email', email)
       .single();
 
@@ -65,7 +65,10 @@ const getTeamName = async (req, res) => {
       return res.status(404).json({ error: 'Team not found' });
     }
 
-    res.json({ team_name_id: data.team_name_id });
+    res.json({
+      team_name_id: data.team_name_id,
+      team_name: data.team_name
+    });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }

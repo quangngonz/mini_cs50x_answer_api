@@ -11,6 +11,5 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ],
-  "buildCommand": "npm run generate-swagger && vercel build"
+  ]
 }
