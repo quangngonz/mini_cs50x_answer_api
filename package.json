@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "generate-swagger": "node -e \"require('fs').writeFileSync('./public/swagger.json', JSON.stringify(require('swagger-jsdoc')({ definition: { openapi: '3.0.0', info: { title: 'Mini CS50x Answer API', version: '1.0.0', description: 'API for submitting answers and retrieving rankings for the ISPH Mini CS50x competition.' } }, apis: ['./controllers/*.js'] })))",
+    "build": "npm run generate-swagger"
   },
   "keywords": [],
   "author": "",
