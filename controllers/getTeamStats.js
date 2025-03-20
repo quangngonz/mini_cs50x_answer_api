@@ -69,6 +69,24 @@ const getTeamStats = async (req, res) => {
       return res.status(500).json({ error: questionsError.message });
     }
 
+    // Get all hints given
+    const { data: hints, error: hintsError } = await supabase
+      .from('hints_given')
+      .select('*');
+
+    if (hintsError) {
+      return res.status(500).json({ error: hintsError.message });
+    }
+
+    // Count how many hints each team has given
+    const teamsHints = {};
+    hints.forEach((hint) => {
+      if (!teamsHints[hint.team_name_id]) {
+        teamsHints[hint.team_name_id] = 0;
+      }
+      teamsHints[hint.team_name_id]++;
+    });
+
     // Sort questions by id
     questions.sort((a, b) => a.id - b.id);
     let questions_star = []
@@ -83,7 +101,7 @@ const getTeamStats = async (req, res) => {
     // Fetch team stats from Supabase
     const { data, error } = await supabase
       .from("teams_progress")
-      .select("solves, timestamps, hints_given")
+      .select("solves, timestamps")
       .eq("team_name_id", team_name_id);
 
     if (error) {
@@ -98,7 +116,7 @@ const getTeamStats = async (req, res) => {
     let score = 0;
     let team_name = team_name_id;
     let answeredQuestions = data[0].solves;
-    let hints_given = data[0].hints_given;
+    let hints_given = teamsHints[team_name_id] || 0;
 
     for(let i = 0; i < answeredQuestions.length; i++) {
       if (answeredQuestions[i]) {
