@@ -15,5 +15,6 @@
       "src": "/swagger.json",
       "dest": "/public/swagger.json"
     }
-  ]
+  ],
+  "buildCommand": "npm run build"
 }
