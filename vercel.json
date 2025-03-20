@@ -10,10 +10,6 @@
     {
       "src": "/(.*)",
       "dest": "index.js"
-    },
-    {
-      "src": "/swagger.json",
-      "dest": "/public/swagger.json"
     }
   ],
   "buildCommand": "npm run generate-swagger && vercel build"
