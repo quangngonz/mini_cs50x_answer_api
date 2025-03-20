@@ -16,6 +16,7 @@ import getTeamName from "./controllers/getTeamName.js";
 // Swagger setup
 import path from 'path';
 import { fileURLToPath } from 'url';
+import updateTeamName from "./controllers/updateTeamName.js";
 
 dotenv.config();
 
@@ -52,6 +53,9 @@ app.post('/addHint', addHint);
 
 // Email to team_name_id
 app.post('/get-team-name', authenticate, getTeamName)
+// Set team name
+app.post('/set-team-name', updateTeamName);
+
 // Get team questions
 app.get("/team/:team_name_id/questions", getTeamQuestions);
 // Get team stats
