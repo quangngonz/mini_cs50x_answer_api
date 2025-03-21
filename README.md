@@ -293,7 +293,3 @@ The `/get-team-name` endpoint requires authentication using a JSON Web Token (JW
 - **Swagger Documentation:** Provides a user-friendly interface to explore and test the API using Swagger UI.
 - **Vercel Deployment:** The `vercel.json` configuration enables serverless deployment on Vercel.
 - **Example Utility Scripts:** The `utils` folder contains example scripts (`pushQuestions.js`, `pushTeams.js`, `randomTeamResults.js`) that demonstrate how to interact with the Supabase database. These are _examples_ and can be modified or removed as needed.
-
-```
-
-```
