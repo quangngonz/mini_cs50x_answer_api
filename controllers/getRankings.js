@@ -75,7 +75,8 @@ export default async function getRankings(req, res) {
   // Get all submissions
   const { data: submissions, error: submissionsError } = await supabase
     .from('submissions')
-    .select('*');
+    .select('*')
+    .eq('correct', false);
 
   if (submissionsError) {
     return res.status(500).json({ error: submissionsError.message });
