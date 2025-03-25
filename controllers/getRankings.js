@@ -115,7 +115,7 @@ export default async function getRankings(req, res) {
   console.log(teamsHints);
 
   // Calculate score for each team
-  teams.forEach(async (team) => {
+  for (const team of teams) {
     let score = 0;
     let team_name = team.team_name_id;
     let answeredQuestions = team.solves;
@@ -141,7 +141,7 @@ export default async function getRankings(req, res) {
       .eq('team_name_id', team_name);
 
     if (teamInfoError) {
-      return res.status(500).json({ error: teamInfoError.message });
+      res.status(500).json({error: teamInfoError.message});
     }
 
     const team_name_string = teamInfo[0].team_name || team_name;
@@ -151,7 +151,8 @@ export default async function getRankings(req, res) {
       answeredQuestions,
       score,
       hints_given,
-      latestTimestamp
+      latestTimestamp,
+      teamInfo[0].team_name
     );
 
     ranking.push({
@@ -165,7 +166,7 @@ export default async function getRankings(req, res) {
         : 0,
       latestSolve: latestTimestamp,
     });
-  });
+  }
 
   // Sort ranking by score, then hints_given, wrong_answers given then by fastest time
   ranking.sort((a, b) => {
