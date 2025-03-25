@@ -139,3 +139,5 @@ dist
 
 #Ignore all .DS_Store files
 .DS_Store
+utils/usernames.csv
+utils/users.py

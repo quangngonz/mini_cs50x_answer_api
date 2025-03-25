@@ -1,15 +1,47 @@
-import supabase from "../services/supabaseService.js";
-import moment from "moment";
+import supabase from '../services/supabaseService.js';
+import moment from 'moment';
 
 const teams = [
-  { team_name_id: "Team 1", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 2", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 3", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 4", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 5", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 6", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 7", solves: [false, false, false, false, false], timestamps: [] },
-  { team_name_id: "Team 8", solves: [false, false, false, false, false], timestamps: [] }
+  {
+    team_name_id: 'Team 1',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 2',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 3',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 4',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 5',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 6',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 7',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
+  {
+    team_name_id: 'Team 8',
+    solves: [false, false, false, false, false],
+    timestamps: [],
+  },
 ];
 
 async function pushTeamsData() {
@@ -25,8 +57,7 @@ async function pushTeamsData() {
 
     const date = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    team.timestamps = [null, null, null,  null , null]
-
+    team.timestamps = [null, null, null, null, null];
 
     const { error } = await supabase.from('teams_progress').insert([team]);
     if (error) {
@@ -37,4 +68,6 @@ async function pushTeamsData() {
   }
 }
 
-pushTeamsData().then(() => process.exit(0)).catch(() => process.exit(1));
+pushTeamsData()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

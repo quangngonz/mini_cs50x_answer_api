@@ -115,7 +115,7 @@ export default async function getRankings(req, res) {
   console.log(teamsHints);
 
   // Calculate score for each team
-  teams.forEach((team) => {
+  teams.forEach(async (team) => {
     let score = 0;
     let team_name = team.team_name_id;
     let answeredQuestions = team.solves;
@@ -132,12 +132,31 @@ export default async function getRankings(req, res) {
       }
     }
 
-    const hints_given = teamsHints[team_name] ? teamsHints[team_name] : 0
+    const hints_given = teamsHints[team_name] ? teamsHints[team_name] : 0;
 
-    console.log(team_name, answeredQuestions, score, hints_given, latestTimestamp);
+    // Get team_name_string from team_info table
+    const { data: teamInfo, error: teamInfoError } = await supabase
+      .from('team_info')
+      .select('team_name')
+      .eq('team_name_id', team_name);
+
+    if (teamInfoError) {
+      return res.status(500).json({ error: teamInfoError.message });
+    }
+
+    const team_name_string = teamInfo[0].team_name || team_name;
+
+    console.log(
+      team_name,
+      answeredQuestions,
+      score,
+      hints_given,
+      latestTimestamp
+    );
 
     ranking.push({
       team_name,
+      team_name_string: team_name_string,
       solves: [answeredQuestions, timestamps],
       score,
       hints_given: teamsHints[team_name] ? teamsHints[team_name] : 0,
