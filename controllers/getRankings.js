@@ -65,7 +65,7 @@ export default async function getRankings(req, res) {
   questions.sort((a, b) => a.id - b.id);
   let questions_star = [];
   questions.forEach((question) => {
-    if (question.star_rating) {
+    if (question.star_rating !== null) {
       questions_star.push(question.star_rating);
     }
   });
