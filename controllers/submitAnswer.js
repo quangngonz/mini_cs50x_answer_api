@@ -2,6 +2,9 @@ import expressAsyncHandler from "express-async-handler";
 import supabase from "../services/supabaseService.js";
 import moment from "moment";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 /**
  * @swagger
  * components:
@@ -131,6 +134,10 @@ const setSuccessfulSolver = async (team_name_id, question_id, teamData) => {
 
 // Main route handler
 const submitAnswer = expressAsyncHandler(async (req, res) => {
+  if(process.env.COMPETITION_ENDED) {
+    return res.status(400).json({ error: "Competition ended" });
+  }
+
   const { team_name_id, question_id, answer } = req.body;
 
   const [correctAnswer, teamData] = await Promise.all([

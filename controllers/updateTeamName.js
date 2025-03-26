@@ -1,5 +1,8 @@
 import supabase from "../services/supabaseService.js";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 /**
  * @swagger
  * /update-team-name:
@@ -57,6 +60,10 @@ import supabase from "../services/supabaseService.js";
  *                   example: "Database update failed"
  */
 const updateTeamName = async (req, res) => {
+  if(process.env.COMPETITION_ENDED) {
+    return res.status(400).json({ error: "Competition ended" });
+  }
+
   const { team_name_id, team_name } = req.body;
 
   if (!team_name_id || !team_name) {
