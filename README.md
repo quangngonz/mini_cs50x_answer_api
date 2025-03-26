@@ -39,153 +39,153 @@ All endpoints are relative to the base URL (e.g., if your API is deployed at `ht
 
 - **GET `/questions`**: Retrieves all questions, including their `id`, `question` text, and `star_rating`. Answers are _not_ included. Questions are sorted by ID.
 
-  - **Response:**
-    ```json
-    [
-      { "id": 1, "question": "What is 2 + 2?", "star_rating": 1 },
-      { "id": 2, "question": "What is the capital of France?", "star_rating": 2 },
-      ...
-    ]
-    ```
+    - **Response:**
+      ```json
+      [
+        { "id": 1, "question": "What is 2 + 2?", "star_rating": 1 },
+        { "id": 2, "question": "What is the capital of France?", "star_rating": 2 },
+        ...
+      ]
+      ```
 
 - **GET `/ranking`**: Retrieves the current team rankings. Rankings are sorted first by score (sum of question star ratings for solved questions), then by the number of hints given, then by the number of wrong answers given, and finally by the timestamp of the latest correct submission.
 
-  - **Response:**
-    ```json
-    [
-      {
-        "team_name": "Team A",
-        "solves": [
-          [true, false, true, ...], // Boolean array: true if solved, false otherwise
-          ["2024-07-24 10:00:00", null, "2024-07-24 11:30:00", ...] // Timestamps (GMT+7) or null
-        ],
-        "score": 3,
-        "hints_given": 0,
-        "wrong_answers": 2,
-        "latestSolve": "2024-07-24T04:30:00.000Z" // Latest solve timestamp (GMT+7)
-      },
-      ...
-    ]
-    ```
+    - **Response:**
+      ```json
+      [
+        {
+          "team_name": "Team A",
+          "solves": [
+            [true, false, true, ...], // Boolean array: true if solved, false otherwise
+            ["2024-07-24 10:00:00", null, "2024-07-24 11:30:00", ...] // Timestamps (GMT+7) or null
+          ],
+          "score": 3,
+          "hints_given": 0,
+          "wrong_answers": 2,
+          "latestSolve": "2024-07-24T04:30:00.000Z" // Latest solve timestamp (GMT+7)
+        },
+        ...
+      ]
+      ```
 
 - **POST `/answer`**: Submits an answer for a specific question.
 
-  - **Request Body (JSON):**
+    - **Request Body (JSON):**
 
-    ```json
-    {
-      "team_name_id": "Team 1",
-      "question_id": 2,
-      "answer": "paris"
-    }
-    ```
+      ```json
+      {
+        "team_name_id": "Team 1",
+        "question_id": 2,
+        "answer": "paris"
+      }
+      ```
 
-  - **Response:**
-    ```json
-    { "correct": true } // or { "correct": false }
-    ```
-    Logs all submissions (correct or incorrect) to a Supabase table.
+    - **Response:**
+      ```json
+      { "correct": true } // or { "correct": false }
+      ```
+      Logs all submissions (correct or incorrect) to a Supabase table.
 
 - **POST `/addHint`**: Submits a hint request for a specific team and question.
 
-  - **Request Body (JSON):**
+    - **Request Body (JSON):**
 
-    ```json
-    {
-      "team_name_id": "Team 1",
-      "question_id": 3
-    }
-    ```
-
-  - **Response (201 Created):**
-    ```json
-    {
-      "message": "Hint added successfully",
-      "data": {
+      ```json
+      {
         "team_name_id": "Team 1",
-        "question_id": 3,
-        "submitted_at": "2024-07-28 15:45:00"
+        "question_id": 3
       }
-    }
-    ```
-  - **Response (400 Bad Request):**
-    ```json
-    {
-      "error": "Missing required fields"
-    }
-    ```
-  - Adds an entry to the `hints_given` table.
+      ```
+
+    - **Response (201 Created):**
+      ```json
+      {
+        "message": "Hint added successfully",
+        "data": {
+          "team_name_id": "Team 1",
+          "question_id": 3,
+          "submitted_at": "2024-07-28 15:45:00"
+        }
+      }
+      ```
+    - **Response (400 Bad Request):**
+      ```json
+      {
+        "error": "Missing required fields"
+      }
+      ```
+    - Adds an entry to the `hints_given` table.
 
 - **POST `/get-team-name`**: Retrieves the `team_name_id` and `team_name` associated with a leader's email. _Requires Authentication._
 
-  - **Request Body (JSON):**
-    ```json
-    {
-      "email": "leader@example.com"
-    }
-    ```
-  - **Request Headers:**
-    ```
-    Authorization: Bearer <your_supabase_jwt>
-    ```
-  - **Response:**
-    ```json
-    {
-      "team_name_id": "Team123",
-      "team_name": "My Team"
-    }
-    ```
-  - **Response (400, 401, 403, 404, 500):** Returns appropriate error messages for invalid requests, unauthorized access, or server errors.
+    - **Request Body (JSON):**
+      ```json
+      {
+        "email": "leader@example.com"
+      }
+      ```
+    - **Request Headers:**
+      ```
+      Authorization: Bearer <your_supabase_jwt>
+      ```
+    - **Response:**
+      ```json
+      {
+        "team_name_id": "Team123",
+        "team_name": "My Team"
+      }
+      ```
+    - **Response (400, 401, 403, 404, 500):** Returns appropriate error messages for invalid requests, unauthorized access, or server errors.
 
 - **POST `/update-team-name`**: Updates the name of a team.
 
-  - **Request Body (JSON):**
-    ```json
-    {
-      "team_name_id": "Team123",
-      "team_name": "New Team Name"
-    }
-    ```
-  - **Response (200 OK):**
-    ```json
-    {
-      "message": "Team name updated successfully"
-    }
-    ```
-  - **Response (400, 500):** Returns appropriate error for missing fields or database update failure.
+    - **Request Body (JSON):**
+      ```json
+      {
+        "team_name_id": "Team123",
+        "team_name": "New Team Name"
+      }
+      ```
+    - **Response (200 OK):**
+      ```json
+      {
+        "message": "Team name updated successfully"
+      }
+      ```
+    - **Response (400, 500):** Returns appropriate error for missing fields or database update failure.
 
 - **GET `/team/{team_name_id}/questions`**: Retrieves the solve status (`solves`) and timestamps (`timestamps`) for a specific team.
 
-  - **Response:**
-    ```json
-    {
-      "solves": [true, false, true, false, false],
-      "timestamps": [
-        "2024-01-01 10:00:00",
-        null,
-        "2024-01-01 12:30:00",
-        null,
-        null
-      ]
-    }
-    ```
-  - **Response (404):** If the team is not found, returns a 404 error.
+    - **Response:**
+      ```json
+      {
+        "solves": [true, false, true, false, false],
+        "timestamps": [
+          "2024-01-01 10:00:00",
+          null,
+          "2024-01-01 12:30:00",
+          null,
+          null
+        ]
+      }
+      ```
+    - **Response (404):** If the team is not found, returns a 404 error.
 
 - **GET `/team/{team_name_id}/stats`**: Retrieves statistics for a specific team, including solves, score, and hints given.
 
-  - **Response:**
-    ```json
-    {
-      "team_name": "Team123",
-      "solves": [
-        [true, false, true, false, false],
-        ["2024-01-01 10:00:00", null, "2024-01-01 12:30:00", null, null]
-      ],
-      "score": 3,
-      "hints_given": 2
-    }
-    ```
-  - **Response (404, 500):** Returns error responses for team not found or database errors.
+    - **Response:**
+      ```json
+      {
+        "team_name": "Team123",
+        "solves": [
+          [true, false, true, false, false],
+          ["2024-01-01 10:00:00", null, "2024-01-01 12:30:00", null, null]
+        ],
+        "score": 3,
+        "hints_given": 2
+      }
+      ```
+    - **Response (404, 500):** Returns error responses for team not found or database errors.
 
 ## Setup and Configuration
 
@@ -210,30 +210,30 @@ All endpoints are relative to the base URL (e.g., if your API is deployed at `ht
     This project uses Supabase. You'll need to create the following tables:
 
     - `questions`:
-      - `id` (integer, primary key)
-      - `question` (text)
-      - `answer` (text) - The correct answer (whitespace and case are significant in the database, but the API handles variations in the submission)
-      - `star_rating` (integer)
+        - `id` (integer, primary key)
+        - `question` (text)
+        - `answer` (text) - The correct answer (whitespace and case are significant in the database, but the API handles variations in the submission)
+        - `star_rating` (integer)
     - `teams_progress`:
-      - `team_name_id` (text, primary key)
-      - `solves` (boolean array) - An array indicating which questions have been solved by the team (e.g., `[false, true, false]` means question 2 is solved).
-      - `timestamps` (timestamp array) - An array of timestamps corresponding to solved questions. Use `null` for unsolved questions.
+        - `team_name_id` (text, primary key)
+        - `solves` (boolean array) - An array indicating which questions have been solved by the team (e.g., `[false, true, false]` means question 2 is solved).
+        - `timestamps` (timestamp array) - An array of timestamps corresponding to solved questions. Use `null` for unsolved questions.
     - `submissions`:
-      - `id` (integer, primary key, auto-increment)
-      - `team_name_id` (text)
-      - `question_id` (integer)
-      - `answer` (text)
-      - `submitted_at` (timestamp)
-      - `correct` (boolean)
+        - `id` (integer, primary key, auto-increment)
+        - `team_name_id` (text)
+        - `question_id` (integer)
+        - `answer` (text)
+        - `submitted_at` (timestamp)
+        - `correct` (boolean)
     - `hints_given`:
-      - `id` (integer, primary key, auto-increment)
-      - `team_name_id` (text)
-      - `question_id` (integer)
-      - `submitted_at` (timestamp)
+        - `id` (integer, primary key, auto-increment)
+        - `team_name_id` (text)
+        - `question_id` (integer)
+        - `submitted_at` (timestamp)
     - `team_info`
-      - `team_name_id` (text, primary key)
-      - `leader_email` (text)
-      - `team_name` (text)
+        - `team_name_id` (text, primary key)
+        - `leader_email` (text)
+        - `team_name` (text)
 
 ## Deployment (Vercel)
 
